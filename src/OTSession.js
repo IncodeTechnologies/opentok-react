@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
 
 import createSession from './createSession';
@@ -41,7 +41,9 @@ export default class OTSession extends Component {
       apiKey: this.props.apiKey,
       sessionId: this.props.sessionId,
       token: this.props.token,
-      onStreamsUpdated: (streams) => { this.setState({ streams }); },
+      onStreamsUpdated: (streams) => {
+        this.setState({ streams });
+      },
       onConnect: this.props.onConnect,
       onError: this.props.onError,
       options: this.props.options,
@@ -71,7 +73,13 @@ export default class OTSession extends Component {
   }
 
   render() {
-    return <div>{this.props.children}</div>;
+    const { children } = this.props;
+    const childrenIsFunc = typeof children === 'function';
+    return (
+      <Fragment>
+        {childrenIsFunc ? children(this.sessionHelper) : this.props.children}
+      </Fragment>
+    );
   }
 }
 
@@ -79,6 +87,7 @@ OTSession.propTypes = {
   children: PropTypes.oneOfType([
     PropTypes.element,
     PropTypes.arrayOf(PropTypes.element),
+    PropTypes.func,
   ]).isRequired,
   apiKey: PropTypes.string.isRequired,
   sessionId: PropTypes.string.isRequired,

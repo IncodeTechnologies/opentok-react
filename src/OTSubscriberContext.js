@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
 
 // This is a wrapper class that establishes context for an OTSubscriber
@@ -13,9 +13,8 @@ export default class OTSubscriberContext extends Component {
   }
 
   render() {
-    return <div>{ this.props.children }</div>;
+    return <Fragment>{this.props.children}</Fragment>;
   }
-
 }
 
 OTSubscriberContext.propTypes = {

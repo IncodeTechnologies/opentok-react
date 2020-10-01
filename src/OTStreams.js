@@ -1,4 +1,4 @@
-import React, { Children, cloneElement } from 'react';
+import React, { Children, cloneElement, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import OTSubscriberContext from './OTSubscriberContext';
 
@@ -7,25 +7,32 @@ export default function OTStreams(props, context) {
   const streams = props.streams || context.streams || null;
 
   if (!session) {
-    return <div />;
+    return null;
   }
 
   const child = Children.only(props.children);
 
   const childrenWithContextWrapper = Array.isArray(streams)
-    ? streams.map(stream => (child
-      ? <OTSubscriberContext stream={stream} key={stream.id} >
-        { cloneElement(child) }
-      </OTSubscriberContext>
-      : child))
+    ? streams.map((stream) =>
+        child ? (
+          <OTSubscriberContext stream={stream} key={stream.id}>
+            {cloneElement(child)}
+          </OTSubscriberContext>
+        ) : (
+          child
+        )
+      )
     : null;
 
-  return <div>{childrenWithContextWrapper}</div>;
+  return <Fragment>{childrenWithContextWrapper}</Fragment>;
 }
 
 OTStreams.propTypes = {
   children: PropTypes.element.isRequired,
-  session: PropTypes.shape({ publish: PropTypes.func, subscribe: PropTypes.func }),
+  session: PropTypes.shape({
+    publish: PropTypes.func,
+    subscribe: PropTypes.func,
+  }),
   streams: PropTypes.arrayOf(PropTypes.object),
 };
 
@@ -35,6 +42,9 @@ OTStreams.defaultProps = {
 };
 
 OTStreams.contextTypes = {
-  session: PropTypes.shape({ publish: PropTypes.func, subscribe: PropTypes.func }),
+  session: PropTypes.shape({
+    publish: PropTypes.func,
+    subscribe: PropTypes.func,
+  }),
   streams: PropTypes.arrayOf(PropTypes.object),
 };
