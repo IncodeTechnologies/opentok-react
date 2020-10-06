@@ -12,17 +12,15 @@ export default function OTStreams(props, context) {
 
   const child = Children.only(props.children);
 
-  const childrenWithContextWrapper = Array.isArray(streams)
-    ? streams.map((stream) =>
-        child ? (
+  console.log(props.loading, 'uwu');
+  const childrenWithContextWrapper =
+    Array.isArray(streams) && streams.length > 0
+      ? streams.map((stream) => (
           <OTSubscriberContext stream={stream} key={stream.id}>
             {cloneElement(child)}
           </OTSubscriberContext>
-        ) : (
-          child
-        )
-      )
-    : null;
+        ))
+      : props.loading;
 
   return <Fragment>{childrenWithContextWrapper}</Fragment>;
 }
@@ -39,6 +37,7 @@ OTStreams.propTypes = {
 OTStreams.defaultProps = {
   session: null,
   streams: null,
+  loading: null,
 };
 
 OTStreams.contextTypes = {
@@ -47,4 +46,5 @@ OTStreams.contextTypes = {
     subscribe: PropTypes.func,
   }),
   streams: PropTypes.arrayOf(PropTypes.object),
+  loading: PropTypes.element,
 };
